@@ -110,4 +110,36 @@ final class ConverterConvertTest extends TestCase
         $this->assertSame($this->backup . '/photo-1.jpg', $r->backup);
         $this->assertFileExists($this->backup . '/photo-1.jpg');
     }
+
+    public function test_skips_missing_file(): void
+    {
+        $r = $this->converter(new WritingEncoder())->convert($this->work . '/nope.jpg');
+        $this->assertSame(ModernFormats_Result::SKIPPED, $r->status);
+    }
+
+    public function test_error_when_output_is_empty_file(): void
+    {
+        $src = $this->srcJpeg();
+        $r = $this->converter(new WritingEncoder(''))->convert($src); // encoder writes a 0-byte file
+        $this->assertSame(ModernFormats_Result::ERROR, $r->status);
+        $this->assertFileExists($src);                              // original intact
+        $this->assertFileDoesNotExist($this->work . '/photo.webp'); // partial output cleaned up
+    }
+
+    public function test_rename_failure_keeps_original_and_nulls_backup(): void
+    {
+        $src = $this->srcJpeg();
+        $bad = $this->work . '/not-a-dir';
+        file_put_contents($bad, 'x'); // a file, so rename into it must fail
+        $conv = new ModernFormats_Converter(
+            new WritingEncoder(),
+            ModernFormats_Config::sanitize(['backup_mode' => 'keep']),
+            $bad
+        );
+        $r = $conv->convert($src);
+        $this->assertSame(ModernFormats_Result::CONVERTED, $r->status);
+        $this->assertNull($r->backup);                          // backup failed -> null
+        $this->assertFileExists($src);                          // original NOT lost when backup fails
+        $this->assertFileExists($this->work . '/photo.webp');
+    }
 }
