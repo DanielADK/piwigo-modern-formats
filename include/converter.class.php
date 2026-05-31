@@ -24,4 +24,49 @@ final class ModernFormats_Converter
     {
         return rtrim($this->backup_dir, '/') . '/' . basename($src);
     }
+
+    public function convert(string $src): ModernFormats_Result
+    {
+        if (!is_file($src) || !$this->is_supported_source($src)) {
+            return new ModernFormats_Result(ModernFormats_Result::SKIPPED);
+        }
+
+        $dest = $this->webp_path($src);
+        if (!$this->encoder->encode($src, $dest, (int) $this->config['quality'])
+            || !is_file($dest) || filesize($dest) === 0) {
+            if (is_file($dest)) {
+                @unlink($dest);
+            }
+            return new ModernFormats_Result(ModernFormats_Result::ERROR, error: 'encode failed: ' . $src);
+        }
+
+        $backup = null;
+        if (($this->config['backup_mode'] ?? 'keep') === 'keep') {
+            $backup = $this->unique_backup_path($src);
+            if (!@rename($src, $backup)) {
+                $backup = null;
+            }
+        } else {
+            @unlink($src);
+        }
+
+        return new ModernFormats_Result(ModernFormats_Result::CONVERTED, dest: $dest, backup: $backup);
+    }
+
+    private function unique_backup_path(string $src): string
+    {
+        $base = $this->backup_path($src);
+        if (!file_exists($base)) {
+            return $base;
+        }
+        $dir  = dirname($base);
+        $name = pathinfo($base, PATHINFO_FILENAME);
+        $ext  = pathinfo($base, PATHINFO_EXTENSION);
+        $i = 1;
+        do {
+            $candidate = "$dir/$name-$i.$ext";
+            $i++;
+        } while (file_exists($candidate));
+        return $candidate;
+    }
 }
