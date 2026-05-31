@@ -1,0 +1,43 @@
+<?php
+if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
+
+check_status(ACCESS_ADMINISTRATOR);
+load_language('plugin.lang', MODERN_FORMATS_PATH);
+
+require_once MODERN_FORMATS_PATH . 'include/classes.inc.php';
+require_once MODERN_FORMATS_PATH . 'include/db.inc.php';
+
+global $template, $page;
+
+$cfg = ModernFormats_Config::load();
+
+if (isset($_POST['submit'])) {
+    if (!check_pwg_token()) {
+        $page['errors'][] = l10n('Invalid security token');
+    } else {
+        $cfg = ModernFormats_Config::from_post($_POST);
+        ModernFormats_Config::save($cfg);
+        $page['infos'][] = l10n('Settings saved.');
+    }
+}
+
+$cap = ModernFormats_Capability::detect();
+$pending = modern_formats_count_pending(ModernFormats_Config::enabled_exts($cfg));
+
+$template->assign([
+    'MF_QUALITY'    => $cfg['quality'],
+    'MF_JPEG'       => $cfg['convert_jpeg'] ? 'checked="checked"' : '',
+    'MF_PNG'        => $cfg['convert_png']  ? 'checked="checked"' : '',
+    'MF_AUTO'       => $cfg['auto_convert'] ? 'checked="checked"' : '',
+    'MF_BACKUP'     => $cfg['backup_mode'],
+    'MF_CAP_OK'     => $cap['ok'],
+    'MF_CAP_REASON' => $cap['reason'],
+    'MF_CAP_LIB'    => $cap['library'],
+    'MF_PENDING'    => $pending,
+    'MF_WS_URL'     => get_root_url() . 'ws.php?format=json',
+    'MF_JS'         => MODERN_FORMATS_URL . 'template/admin.js',
+    'PWG_TOKEN'     => get_pwg_token(),
+]);
+
+$template->set_filename('mf_admin', MODERN_FORMATS_PATH . 'template/admin.tpl');
+$template->assign_var_from_handle('ADMIN_CONTENT', 'mf_admin');
