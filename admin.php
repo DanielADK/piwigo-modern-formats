@@ -12,13 +12,10 @@ global $template, $page;
 $cfg = ModernFormats_Config::load();
 
 if (isset($_POST['submit'])) {
-    if (!check_pwg_token()) {
-        $page['errors'][] = l10n('Invalid security token');
-    } else {
-        $cfg = ModernFormats_Config::from_post($_POST);
-        ModernFormats_Config::save($cfg);
-        $page['infos'][] = l10n('Settings saved.');
-    }
+    check_pwg_token(); // dies on invalid/missing token (Piwigo CSRF guard)
+    $cfg = ModernFormats_Config::from_post($_POST);
+    ModernFormats_Config::save($cfg);
+    $page['infos'][] = l10n('Settings saved.');
 }
 
 $cap = ModernFormats_Capability::detect();

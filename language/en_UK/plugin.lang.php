@@ -12,7 +12,6 @@ $lang['Keep a backup'] = 'Keep a backup';
 $lang['Delete (save space)'] = 'Delete (save space)';
 $lang['Save Settings'] = 'Save Settings';
 $lang['Settings saved.'] = 'Settings saved.';
-$lang['Invalid security token'] = 'Invalid security token';
 $lang['Bulk conversion'] = 'Bulk conversion';
 $lang['Photos pending conversion'] = 'Photos pending conversion';
 $lang['Convert existing photos'] = 'Convert existing photos';
