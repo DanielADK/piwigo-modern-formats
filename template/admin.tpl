@@ -49,7 +49,8 @@ window.MF_BULK = {
   i18n: {
     running: "{'Converting...'|@translate}",
     done: "{'Done.'|@translate}",
-    failed: "{'Conversion failed.'|@translate}"
+    failed: "{'Conversion failed.'|@translate}",
+    doneErrors: "{'Done, but some photos could not be converted (check logs).'|@translate}"
   }
 };
 </script>

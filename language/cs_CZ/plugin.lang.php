@@ -18,4 +18,5 @@ $lang['Photos pending conversion'] = 'Fotek čeká na převod';
 $lang['Convert existing photos'] = 'Převést existující fotky';
 $lang['Converting...'] = 'Převádím...';
 $lang['Done.'] = 'Hotovo.';
+$lang['Done, but some photos could not be converted (check logs).'] = 'Hotovo, ale některé fotky se nepodařilo převést (viz logy).';
 $lang['Conversion failed.'] = 'Převod selhal.';

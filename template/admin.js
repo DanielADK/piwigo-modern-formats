@@ -8,6 +8,7 @@
   var status = document.getElementById('mfBulkStatus');
   var pending = document.getElementById('mfPending');
   var total = cfg.total || 0;
+  var errorCount = 0;
 
   function setProgress(remaining) {
     var doneCount = Math.max(0, total - remaining);
@@ -28,11 +29,12 @@
       .then(function (j) {
         if (!j || j.stat !== 'ok') { throw new Error('ws error'); }
         var res = j.result;
+        if (res.errors && res.errors.length) { errorCount += res.errors.length; }
         setProgress(res.remaining);
         if (res.next_id) {
           setTimeout(function () { step(res.next_id); }, 50);
         } else {
-          status.textContent = cfg.i18n.done;
+          status.textContent = errorCount > 0 ? cfg.i18n.doneErrors : cfg.i18n.done;
           btn.disabled = false;
         }
       })

@@ -18,4 +18,5 @@ $lang['Photos pending conversion'] = 'Photos pending conversion';
 $lang['Convert existing photos'] = 'Convert existing photos';
 $lang['Converting...'] = 'Converting...';
 $lang['Done.'] = 'Done.';
+$lang['Done, but some photos could not be converted (check logs).'] = 'Done, but some photos could not be converted (check logs).';
 $lang['Conversion failed.'] = 'Conversion failed.';
