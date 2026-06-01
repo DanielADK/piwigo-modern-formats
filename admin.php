@@ -32,7 +32,6 @@ $template->assign([
     'MF_BACKUP'     => $cfg['backup_mode'],
     'MF_CAP_OK'     => $cap['ok'],
     'MF_CAP_REASON' => $cap['reason'],
-    'MF_CAP_LIB'    => $cap['library'],
     'MF_PENDING'    => $pending,
     'MF_WS_URL'     => get_root_url() . 'ws.php?format=json',
     'MF_JS'         => MODERN_FORMATS_URL . 'template/admin.js',
