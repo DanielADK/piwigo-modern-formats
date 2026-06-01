@@ -1,7 +1,7 @@
 {
   "name": "piwigo/modern-formats",
   "description": "Piwigo plugin: auto-convert uploaded photos to WebP, with bulk conversion.",
-  "license": "GPL-2.0-or-later",
+  "license": "WTFPL",
   "type": "piwigo-plugin",
   "require": {
     "php": ">=8.2"

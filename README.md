@@ -35,4 +35,4 @@ Upload via Admin → Plugins → Manage → Add, or extract into `plugins/modern
 
 ## License
 
-GPL-2.0-or-later.
+WTFPL — see [LICENSE](LICENSE).
