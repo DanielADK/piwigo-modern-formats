@@ -1,0 +1,21 @@
+<?php
+if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
+
+$lang['Modern Formats'] = 'Modern Formats';
+$lang['Settings'] = 'Settings';
+$lang['WebP quality (1-100)'] = 'WebP quality (1-100)';
+$lang['Convert new uploads automatically'] = 'Convert new uploads automatically';
+$lang['Convert JPEG'] = 'Convert JPEG';
+$lang['Convert PNG'] = 'Convert PNG';
+$lang['Original files'] = 'Original files';
+$lang['Keep a backup'] = 'Keep a backup';
+$lang['Delete (save space)'] = 'Delete (save space)';
+$lang['Save Settings'] = 'Save Settings';
+$lang['Settings saved.'] = 'Settings saved.';
+$lang['Invalid security token'] = 'Invalid security token';
+$lang['Bulk conversion'] = 'Bulk conversion';
+$lang['Photos pending conversion'] = 'Photos pending conversion';
+$lang['Convert existing photos'] = 'Convert existing photos';
+$lang['Converting...'] = 'Converting...';
+$lang['Done.'] = 'Done.';
+$lang['Conversion failed.'] = 'Conversion failed.';
