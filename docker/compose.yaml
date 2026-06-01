@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: piwigo
+      MARIADB_DATABASE: piwigo
+      MARIADB_USER: piwigo
+      MARIADB_PASSWORD: piwigo
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  piwigo:
+    image: lscr.io/linuxserver/piwigo:latest
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: Europe/Prague
+    ports:
+      - "8080:80"
+    volumes:
+      - pwgconfig:/config
+      # Mount the repo root as the plugin dir (named modern_formats, no hyphen).
+      - ../:/config/www/gallery/plugins/modern_formats:ro
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
+  pwgconfig:
