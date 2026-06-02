@@ -13,10 +13,13 @@ interface ModernFormats_Encoder
 // catchable error. A corrupt/truncated photo must never crash the conversion.
 final class ModernFormats_PwgImageEncoder implements ModernFormats_Encoder
 {
+    public ?string $lastError = null;
+
     public function __construct(private ?string $library = null) {}
 
     public function encode(string $src, string $dest, int $quality): bool
     {
+        $this->lastError = null;
         try {
             $img = new pwg_image($src, $this->library);
             $img->set_compression_quality($quality);
@@ -31,6 +34,7 @@ final class ModernFormats_PwgImageEncoder implements ModernFormats_Encoder
             $img->write($dest);
             $img->destroy();
         } catch (\Throwable $e) {
+            $this->lastError = $e->getMessage();
             if (is_file($dest)) {
                 @unlink($dest);
             }

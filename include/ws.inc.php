@@ -54,11 +54,8 @@ function ws_modern_formats_convert($params, &$service)
     $limit = (int) $params['limit'];
     $rows  = modern_formats_pending_rows((int) $params['start_id'], $limit, $exts);
 
-    $converter = new ModernFormats_Converter(
-        new ModernFormats_PwgImageEncoder($cap['library']),
-        $cfg,
-        MODERN_FORMATS_BACKUP_DIR
-    );
+    $encoder = new ModernFormats_PwgImageEncoder($cap['library']);
+    $converter = new ModernFormats_Converter($encoder, $cfg, MODERN_FORMATS_BACKUP_DIR);
 
     $converted = 0;
     $errors = [];
@@ -74,9 +71,11 @@ function ws_modern_formats_convert($params, &$service)
                 $converted++;
             } elseif ($result->status === ModernFormats_Result::ERROR) {
                 $errors[] = (int) $row['id'];
+                modern_formats_log('bulk: could not convert image ' . $row['id'] . ' (' . $row['path'] . ') — ' . ($encoder->lastError ?? 'unreadable or unsupported image'));
             }
         } catch (\Throwable $e) {
             $errors[] = (int) $row['id'];
+            modern_formats_log('bulk: error on image ' . $row['id'] . ' (' . $row['path'] . ') — ' . $e->getMessage());
         }
         $next_id = (int) $row['id'];
     }

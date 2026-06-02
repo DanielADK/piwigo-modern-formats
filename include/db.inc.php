@@ -4,6 +4,15 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 require_once PHPWG_ROOT_PATH . 'admin/include/functions.php';        // delete_element_derivatives()
 require_once PHPWG_ROOT_PATH . 'admin/include/functions_upload.inc.php'; // pwg_image_infos()
 
+// Writes to Piwigo's _data/logs/ (grep for [modern_formats]).
+function modern_formats_log(string $message): void
+{
+    global $logger;
+    if (isset($logger) && method_exists($logger, 'error')) {
+        $logger->error('[modern_formats] ' . $message);
+    }
+}
+
 // Purge the old (.jpg) derivative cache, then rewrite the image row to the
 // new .webp file. Order matters: the cache is keyed off the OLD path.
 function modern_formats_update_image(int $image_id, string $old_rel_path, string $new_abs_path): void
