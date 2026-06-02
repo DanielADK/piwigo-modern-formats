@@ -19,11 +19,10 @@ services:
       - "8080:80"
     volumes:
       - pwgconfig:/config
-      # Mount the repo root as the plugin dir. We use the hyphenated repo name on
-      # purpose — that's the folder a `git clone` produces — to keep verifying the
-      # plugin stays folder-name-agnostic. The linuxserver image serves Piwigo from
-      # /app/www/public, whose plugins/ symlinks to /config/www/plugins.
-      - ../:/config/www/plugins/piwigo-modern-formats:ro
+      # The plugin's folder MUST be "modern_formats" (= its id). The linuxserver
+      # image serves Piwigo from /app/www/public, whose plugins/ symlinks to
+      # /config/www/plugins.
+      - ../:/config/www/plugins/modern_formats:ro
     depends_on:
       - db
 

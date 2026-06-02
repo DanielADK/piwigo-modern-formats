@@ -1,18 +1,30 @@
 <?php
 /*
 Plugin Name: Modern Formats
-Version: 1.1.2
+Version: 1.2.0
 Description: Automatically converts uploaded JPEG/PNG photos to WebP (configurable quality) and bulk-converts existing photos.
 Plugin URI: https://github.com/DanielADK/piwigo-modern-formats
 Author: Daniel Adámek
 Author URI: https://github.com/DanielADK
+Has Settings: true
 */
 
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
+// The plugin id IS its folder name; it must be "modern_formats" so the
+// maintenance class and settings routing match and a duplicate install under a
+// second name is impossible. Refuse to run under any other folder name.
+if (basename(__DIR__) !== 'modern_formats') {
+    add_event_handler('init', function () {
+        global $page;
+        $page['errors'][] = 'The "Modern Formats" plugin folder must be named "modern_formats". Please reinstall it with that folder name.';
+    });
+    return;
+}
+
 global $conf;
 
-define('MODERN_FORMATS_ID', basename(dirname(__FILE__)));
+define('MODERN_FORMATS_ID', 'modern_formats');
 define('MODERN_FORMATS_PATH', PHPWG_PLUGINS_PATH . MODERN_FORMATS_ID . '/');
 define('MODERN_FORMATS_URL', get_root_url() . 'plugins/' . MODERN_FORMATS_ID . '/');
 define('MODERN_FORMATS_BACKUP_DIR', $conf['data_location'] . 'modern_formats_backup/');
@@ -24,14 +36,3 @@ add_event_handler('loc_end_add_uploaded_file', 'modern_formats_on_upload',
 // Register bulk-conversion web service methods.
 add_event_handler('ws_add_methods', 'modern_formats_add_ws_methods',
     EVENT_HANDLER_PRIORITY_NEUTRAL, MODERN_FORMATS_PATH . 'include/ws.inc.php');
-
-// Settings link (folder-name-agnostic; the "Has Settings" header's alias breaks on hyphens).
-add_event_handler('get_admin_plugin_menu_links', 'modern_formats_admin_menu');
-function modern_formats_admin_menu($menu)
-{
-    $menu[] = [
-        'NAME' => 'Modern Formats',
-        'URL'  => get_root_url() . 'admin.php?page=plugin&section=' . MODERN_FORMATS_ID . '/admin.php',
-    ];
-    return $menu;
-}
