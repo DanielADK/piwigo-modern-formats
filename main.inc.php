@@ -3,7 +3,7 @@
 Plugin Name: Modern Formats
 Version: 1.2.0
 Description: Automatically converts uploaded JPEG/PNG photos to WebP (configurable quality) and bulk-converts existing photos.
-Plugin URI: https://github.com/DanielADK/piwigo-modern-formats
+Plugin URI: https://github.com/DanielADK/modern_formats
 Author: Daniel Adámek
 Author URI: https://github.com/DanielADK
 Has Settings: true
