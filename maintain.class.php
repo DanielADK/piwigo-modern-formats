@@ -3,7 +3,7 @@ if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 
 require_once __DIR__ . '/include/config.class.php';
 
-class modern_formats_maintain extends PluginMaintain
+class ModernFormats_Maintain extends PluginMaintain
 {
     function install($plugin_version, &$errors = [])
     {
@@ -21,7 +21,6 @@ class modern_formats_maintain extends PluginMaintain
 
     function update($old_version, $new_version, &$errors = [])
     {
-        global $conf;
         // Re-sanitize so new config keys get their defaults across upgrades.
         $current = safe_unserialize(conf_get_param(ModernFormats_Config::PARAM, []));
         conf_update_param(ModernFormats_Config::PARAM, ModernFormats_Config::sanitize((array) $current), true);
@@ -47,4 +46,9 @@ class modern_formats_maintain extends PluginMaintain
             @file_put_contents($htaccess, "Require all denied\nDeny from all\n");
         }
     }
+}
+
+$mf_maintain_class = str_replace('-', '_', basename(__DIR__)) . '_maintain';
+if (!class_exists($mf_maintain_class, false)) {
+    class_alias('ModernFormats_Maintain', $mf_maintain_class);
 }
