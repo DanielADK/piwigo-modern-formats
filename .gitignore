@@ -8,3 +8,4 @@ _data/
 /modern_formats.zip
 .phpunit.result.cache
 .playwright-mcp/
+/screenshot.jpg
