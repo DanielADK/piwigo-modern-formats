@@ -32,8 +32,12 @@ final class ModernFormats_Converter
         }
 
         $dest = $this->webp_path($src);
-        if (!$this->encoder->encode($src, $dest, (int) $this->config['quality'])
-            || !is_file($dest) || filesize($dest) === 0) {
+        try {
+            $ok = $this->encoder->encode($src, $dest, (int) $this->config['quality']);
+        } catch (\Throwable $e) {
+            $ok = false;
+        }
+        if (!$ok || !is_file($dest) || filesize($dest) === 0) {
             if (is_file($dest)) {
                 @unlink($dest);
             }

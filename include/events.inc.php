@@ -18,7 +18,8 @@ function modern_formats_on_upload($image_infos): void
 {
     try {
         $cfg = ModernFormats_Config::load();
-        if (empty($cfg['auto_convert']) || !ModernFormats_Capability::detect()['ok']) {
+        $cap = ModernFormats_Capability::detect();
+        if (empty($cfg['auto_convert']) || !$cap['ok']) {
             return;
         }
 
@@ -26,7 +27,7 @@ function modern_formats_on_upload($image_infos): void
         $src_abs  = PHPWG_ROOT_PATH . preg_replace('#^\./#', '', $old_rel);
 
         $converter = new ModernFormats_Converter(
-            new ModernFormats_PwgImageEncoder(),
+            new ModernFormats_PwgImageEncoder($cap['library']),
             $cfg,
             MODERN_FORMATS_BACKUP_DIR
         );

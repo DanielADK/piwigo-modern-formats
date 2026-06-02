@@ -20,6 +20,11 @@ final class LyingEncoder implements ModernFormats_Encoder
     // Claims success but writes nothing (must be treated as an error).
     public function encode(string $src, string $dest, int $quality): bool { return true; }
 }
+final class ThrowingEncoder implements ModernFormats_Encoder
+{
+    // Simulates a backend that throws on a corrupt source (e.g. ImagickException).
+    public function encode(string $src, string $dest, int $quality): bool { throw new \RuntimeException('corrupt'); }
+}
 
 final class ConverterConvertTest extends TestCase
 {
@@ -77,6 +82,14 @@ final class ConverterConvertTest extends TestCase
         $r = $this->converter(new LyingEncoder())->convert($src);
         $this->assertSame(ModernFormats_Result::ERROR, $r->status);
         $this->assertFileExists($src);
+    }
+
+    public function test_error_when_encoder_throws(): void
+    {
+        $src = $this->srcJpeg();
+        $r = $this->converter(new ThrowingEncoder())->convert($src);
+        $this->assertSame(ModernFormats_Result::ERROR, $r->status);
+        $this->assertFileExists($src); // original intact when the encoder throws
     }
 
     public function test_converted_keeps_backup(): void

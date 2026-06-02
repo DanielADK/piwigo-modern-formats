@@ -55,7 +55,7 @@ function ws_modern_formats_convert($params, &$service)
     $rows  = modern_formats_pending_rows((int) $params['start_id'], $limit, $exts);
 
     $converter = new ModernFormats_Converter(
-        new ModernFormats_PwgImageEncoder(),
+        new ModernFormats_PwgImageEncoder($cap['library']),
         $cfg,
         MODERN_FORMATS_BACKUP_DIR
     );
@@ -64,12 +64,18 @@ function ws_modern_formats_convert($params, &$service)
     $errors = [];
     $next_id = null;
     foreach ($rows as $row) {
-        $src_abs = PHPWG_ROOT_PATH . preg_replace('#^\./#', '', $row['path']);
-        $result = $converter->convert($src_abs);
-        if ($result->ok()) {
-            modern_formats_update_image((int) $row['id'], $row['path'], $result->dest);
-            $converted++;
-        } elseif ($result->status === ModernFormats_Result::ERROR) {
+        // Guard each photo: a single bad file must not abort the whole batch.
+        // $next_id still advances so the cursor makes progress past it.
+        try {
+            $src_abs = PHPWG_ROOT_PATH . preg_replace('#^\./#', '', $row['path']);
+            $result = $converter->convert($src_abs);
+            if ($result->ok()) {
+                modern_formats_update_image((int) $row['id'], $row['path'], $result->dest);
+                $converted++;
+            } elseif ($result->status === ModernFormats_Result::ERROR) {
+                $errors[] = (int) $row['id'];
+            }
+        } catch (\Throwable $e) {
             $errors[] = (int) $row['id'];
         }
         $next_id = (int) $row['id'];
